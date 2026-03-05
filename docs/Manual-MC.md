@@ -683,7 +683,7 @@ git clone https://github.com/KodII-rover/MSUROVERTEAM-DC-STM32.git
 ```
 Перенесите папку EUREKA_DC_DISC_5.0 в ваш воркспейс(рабочую папку) STM32CubeIDE
 ```
-cp MSUROVERTEAM-DC-STM32/EUREKA_DC_DISC_5.0 &lt;ваш воркспейс&gt;
+cp MSUROVERTEAM-DC-STM32/EUREKA_DC_DISC_5.0 <ваш воркспейc>
 ```
 1.  Импортирование в STM32CubeIDE.  
     Откройте STM32CubeIDE.  
@@ -976,11 +976,11 @@ cp MSUROVERTEAM-DC-ROS2/eureka_movement_2/eureka_movement_2eureka_movement_lib.p
 ```
 1.  Установка всего драйвера. Чтобы установить весь пример, перенесите весь пакет eureka_movement_2 в ваш воркспейс (рабочую папку) ROS2.
 ```
-cp MSUROVERTEAM-DC-ROS2/eureka_movement_2 &lt;ваш воркспейс&gt;/src
+cp MSUROVERTEAM-DC-ROS2/eureka_movement_2 <ваш воркспейc>/src
 ```
 Перейдите в корневую директорию вашего воркспейса и установите пакет через colcon. При разработке использовался флаг --symlink-install, рекомендуется им пользоваться.
 ```
-cd &lt;ваш воркспейс&gt;
+cd <ваш воркспейc>
 colcon build --symlink-install --packages-select eureka_movement_2
 ```
 ## **Базовый пример использования и пошаговая инструкция его запуска.**
