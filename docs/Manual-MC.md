@@ -489,7 +489,7 @@ self.x = [h.ref(0) for i in range(20)]
 self.command_format = '''global: hrtb=%d, cm=%d, ps=%d, vl=%.2f, gp=%.4f, gi=%f, gd=%.4f\r\n\
 wheel1: stp_pos=%.2f, stp_vel=%.2f, dc_vel=%.2f\r\n\
 wheel2: stp_pos=%.2f, stp_vel=%.2f, dc_vel=%.2f\r\n\
-gp: pulse=%.2f\r\n\\
+gp: pulse=%.2f\r\n\
 __end__'''
 
 self.reply_format = '''wheel1: stepper_pos=%f, dc_vel=%f\r\n\
