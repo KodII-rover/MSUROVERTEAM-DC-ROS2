@@ -320,7 +320,7 @@ int encoder_ticks_debug;
 ```
 **Функции для работы со структурой.**
 ``` c
-int dc_init(struct dc_motor \*motor);
+int dc_init(struct dc_motor *motor);
 ```
 Назначение. Инициализация периферии микроконтроллера в соответствии с конфигурационными параметрами.
 Входные переменные. Указатель на нужную структуру struct dc_motor
@@ -334,28 +334,28 @@ int dc_set_pulse(struct dc_motor *motor); // set pusle for a twin-channel DC dri
 Возвращаемое значение: всегда 1
 Применение. Для отдачи команды на привод.
 ``` c
-int dc_set_pulse_A1A2(struct dc_motor \*motor); // set pulse for a single-channel DC driver
+int dc_set_pulse_A1A2(struct dc_motor *motor); // set pulse for a single-channel DC driver
 ```
 Назначение. Применяет текущие значения pulse для одноканального ШИМ драйвера с A1A2
 Входные переменные. Указатель на нужную структуру struct dc_motor
 Возвращаемое значение: всегда 1
 Применение. Для отдачи команды на привод
 ``` c
-int dc_calculate_period(struct dc_motor \*motor);// calculate time period that elapsed
+int dc_calculate_period(struct dc_motor *motor);// calculate time period that elapsed
 ```
 Назначение. Обновляет значение period_seconds, это прошедшее время в секундах с предыдущего вызова этой функции
 Входные переменные. Указатель на нужную структуру struct dc_motor
 Возвращаемое значение: всегда 1
 Применение. Значение period_seconds нужно для расчета скорости
 ``` c
-int dc_calculate_velocity(struct dc_motor \*motor);// calculate velocity after a period is known
+int dc_calculate_velocity(struct dc_motor *motor);// calculate velocity after a period is known
 ```
 Назначение. Считает raw_velocity и filtered_velocity, требует корректный period_seconds
 Входные переменные. Указатель на нужную структуру struct dc_motor
 Возвращаемое значение: всегда 1
 Применение. Для вычисления скорости, сразу после dc_calculate_period;
 ``` c
-int dc_pid(struct dc_motor \*motor); // calculate motor inputs via PID
+int dc_pid(struct dc_motor *motor); // calculate motor inputs via PID
 ```
 Назначение. Считает pid_value с помощью ПИД регулятора.
 Входные переменные: Указатель на нужную структуру struct stepper.
@@ -993,7 +993,7 @@ colcon build --symlink-install --packages-select eureka_movement_2
 
 1.  Найдите, какие файлы в папке /dev отвечают вашим низкоуровневым вычислителям. Как правило это будут /dev/USBtty\*. Дайте разрешение на чтение и запись в эти файлы.
 ```
-chmod 777 /dev/USBtty\*
+chmod 777 /dev/USBtty*
 ```
 1.  Пропишите эти названия в файле MSUROVERTEAM-DC-ROS2/eureka_movement_2/eureka_movement_2/usb_movement_3.py
 ``` python
