@@ -972,7 +972,7 @@ git clone https://github.com/KodII-rover/MSUROVERTEAM-DC-ROS2.git
 ```
 1.  Установка файла библиотеки. Чтобы использовать только саму библиотеку, скопируйте ее .py файл в нужную вам директорию.
 ```
-cp MSUROVERTEAM-DC-ROS2/eureka_movement_2/eureka_movement_2eureka_movement_lib.py &lt;ваша папка&gt;
+cp MSUROVERTEAM-DC-ROS2/eureka_movement_2/eureka_movement_2eureka_movement_lib.py <ваша папка>
 ```
 1.  Установка всего драйвера. Чтобы установить весь пример, перенесите весь пакет eureka_movement_2 в ваш воркспейс (рабочую папку) ROS2.
 ```
