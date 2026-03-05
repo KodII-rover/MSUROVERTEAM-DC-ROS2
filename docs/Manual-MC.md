@@ -144,7 +144,7 @@ int dc_set_pulse(struct dc_motor *motor); // set pusle for a twin-channel DC dri
 int dc_set_pulse_A1A2(struct dc_motor *motor); // set pulse for a single-channel DC driver
 int dc_calculate_period(struct dc_motor *motor); // calculate time period that elapsed
 int dc_calculate_velocity(struct dc_motor *motor); // calculate velocity after a period is known
-int dc_pid(struct dc_motor \*motor); // calculate motor inputs via PID
+int dc_pid(struct dc_motor *motor); // calculate motor inputs via PID
 ```
 Функции общего назначения:
 ``` c
@@ -196,28 +196,28 @@ long ticks_total;
 ```
 **Функции для работы со структурой.**
 ``` c
-int stepper_init(struct stepper \*stp); // initialize peripherals
+int stepper_init(struct stepper *stp); // initialize peripherals
 ```
 Назначение. Инициализация периферии микроконтроллера в соответствии с конфигурационными параметрами.
 Входные переменные. Указатель на нужную структуру struct stepper
 Возвращаемое значение: всегда 1
 Применение. После HAL_Init() и определения всех конфигурационных параметров в объекте stepper, до всех остальных функций, работающих с соответствующим объектом stepper.
 ```c
-int stepper_set(struct stepper \*stp); // apply en, dir, step to motor
+int stepper_set(struct stepper *stp); // apply en, dir, step to motor
 ```
 Назначение. применяет текущие значения current velocity и enable на привод
 Входные переменные. Указатель на нужную структуру struct stepper
 Возвращаемое значение: всегда 1
 Применение. Для отдачи команды на привод.
 ``` c
-int stepper_calculate_angle(struct stepper \*stp); // calculate current stepper angle from encoder
+int stepper_calculate_angle(struct stepper *stp); // calculate current stepper angle from encoder
 ```
 Назначение. Обновляет значение current_position по показаниям энкодера
 Входные переменные. Указатель на нужную структуру struct stepper
 Возвращаемое значение: всегда 1
 Применение. Для получения актуальных показаний датчика
 ``` c
-int stepper_logic(struct stepper \*stp); // interprets angles and sets target velocity to arrive at target angle and stay there
+int stepper_logic(struct stepper *stp); // interprets angles and sets target velocity to arrive at target angle and stay there
 ```
 Назначение. Логика управления двигателем. Исходя из текущего угла current_position и ограничения скорости target_velocity считает current_velocity
 Входные переменные. Указатель на нужную структуру struct stepper
@@ -228,7 +228,7 @@ int stepper_logic(struct stepper \*stp); // interprets angles and sets target ve
 ``` c
 //объявить глобально
 #define stp_len 2
-struct stepper stp\[stp_len\];
+struct stepper stp[stp_len];
 
 //инициализация в main()
 for (c = 0; c < stp_len; ++c) {
