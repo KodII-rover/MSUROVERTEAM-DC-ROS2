@@ -126,51 +126,32 @@
 - Уровень абстракции: HAL для STM32 версии F4
 
 Используемые структуры данных:
-
-1\. stepper (typedef struct)
-
-2\. dc_motor (typedef struct)
-
+```
+stepper (typedef struct)
+dc_motor (typedef struct)
+```
 Функции для работы со структурой stepper:
-
-int stepper_init(struct stepper \*stp); // initialize peripherals
-
-int stepper_set(struct stepper \*stp); // apply en, dir, step to motor
-
-int stepper_calculate_angle(struct stepper \*stp); // calculate current stepper angle
-
-// from encoder
-
-int stepper_logic(struct stepper \*stp); // interprets angles and sets target
-
-// velocity to arrive at target angle
-
-// and stay there
-
+``` c
+int stepper_init(struct stepper *stp); // initialize peripherals
+int stepper_set(struct stepper *stp); // apply en, dir, step to motor
+int stepper_calculate_angle(struct stepper *stp); // calculate current stepper angle from encoder
+int stepper_logic(struct stepper *stp); // interprets angles and sets target velocity to arrive at target angle and stay there
+```
 Функции для работы со структурой dc_motor:
-
-int dc_init(struct dc_motor \*motor); // initialize peripherals
-
-int dc_set_pulse(struct dc_motor \*motor); // set pusle for a twin-channel DC driver
-
-int dc_set_pulse_A1A2(struct dc_motor \*motor); // set pulse for a single-channel DC driver
-
-int dc_calculate_period(struct dc_motor \*motor); // calculate time period that elapsed
-
-int dc_calculate_velocity(struct dc_motor \*motor); // calculate velocity after a period is
-
-// known
-
+``` c
+int dc_init(struct dc_motor *motor); // initialize peripherals
+int dc_set_pulse(struct dc_motor *motor); // set pusle for a twin-channel DC driver
+int dc_set_pulse_A1A2(struct dc_motor *motor); // set pulse for a single-channel DC driver
+int dc_calculate_period(struct dc_motor *motor); // calculate time period that elapsed
+int dc_calculate_velocity(struct dc_motor *motor); // calculate velocity after a period is known
 int dc_pid(struct dc_motor \*motor); // calculate motor inputs via PID
-
+```
 Функции общего назначения:
-
+``` c
 float abs_float(float val); // calculates absolute value of float
-
 int sign_float(float val); // returns sign of given float
-
 float clamp_float(float val, float min, float max); // clamps float to range
-
+```
 ### **1\. typedef struct stepper**
 
 Назначение. Управление сервоприводом, состоящим из шагового двигателя (возможно, редукторного), драйвера шагового двигателя с интерфейсом step/dir, и абсолютным аналоговым энкодером на выходном валу шагового двигателя.
@@ -180,217 +161,115 @@ float clamp_float(float val, float min, float max); // clamps float to range
 **Переменные.**
 
 \- управляющие - через них отдаются команды сервоприводу. Можно изменять по ходу работы программы.
-
-float target_velocity; // in deg/s - максимальная скорость вращения
-
-// двигателя в градусах в секунду
-
-float target_position; // in degrees - целевое положение вала, измеряемое
-
-// по энкодеру, в градусах
-
-int enable; //if stepper coils are to be energized at all – включает
-
-// и выключает драйвер двигателя
-
+``` c
+float target_velocity; // in deg/s - максимальная скорость вращения двигателя в градусах в секунду
+float target_position; // in degrees - целевое положение вала, измеряемое по энкодеру, в градусах
+int enable; //if stepper coils are to be energized at all – включает и выключает драйвер двигателя
+```
 \- измеряемые - в них содержится наиболее актуальное значение измеряемой переменной
-
-float current_position; // measured angle in degrees - угол, измеренный
-
-// энкодером, в градусах. От 0 до 360
-
+``` c
+float current_position; // measured angle in degrees - угол, измеренный энкодером, в градусах. От 0 до 360
+```
 \- Конфигурационные - настройки привода. Задаются один раз до инициализации HAL и не меняются после.
-
-int direction_fix; // Устанавливать в +-1 так, чтобы при положительной
-
-// скорости вращения шаговика значение угла энкодера
-
-// увеличивалось.
-
-int raw_angle_offset; // Смещение нуля энкодера на уровне АЦП. Устанавливать
-
-// так чтобы измеренный угол никогда не перескакивал
-
-// между 360 и 0.
-
-float hold_position_tolerance; // Допустимая ошибка угла в режиме удержания позиции.
-
-// Если она превышена - привод переходит в режим движения
-
-// чтобы скорректировать ошибку.
-
-float drive_position_tolerance; // Допустимая ошибка угла в режиме движения. Должна быть
-
-// меньше допустимой ошибки удержания. Рекомендуется
-
-// hold_position_tolerance/2.
-
+``` c
+int direction_fix; // Устанавливать в +-1 так, чтобы при положительной скорости вращения шаговика значение угла энкодера увеличивалось.
+int raw_angle_offset; // Смещение нуля энкодера на уровне АЦП. Устанавливать так чтобы измеренный угол никогда не перескакивал между 360 и 0.
+float hold_position_tolerance; // Допустимая ошибка угла в режиме удержания позиции. Если она превышена - привод переходит в режим движения чтобы скорректировать ошибку.
+float drive_position_tolerance; // Допустимая ошибка угла в режиме движения. Должна быть меньше допустимой ошибки удержания. Рекомендуется hold_position_tolerance/2.
 float gear_ratio; // Передаточное число редуктора шаговика.
-
-int is_backdriveable; // ставить в нуль для самоблокирующихся (червячных)
-
-// редукторов, иначе 1.
-
-TIM_HandleTypeDef \*timer; // таймер который будет генерировать ШИМ для STEP.
-
-// Один таймер на один шаговик.
-
+int is_backdriveable; // ставить в нуль для самоблокирующихся (червячных) редукторов, иначе 1.
+TIM_HandleTypeDef *timer; // таймер который будет генерировать ШИМ для STEP. Один таймер на один шаговик.
 uint16_t channel; // используемый канал ШИМ таймера
-
-GPIO_TypeDef\* en_port; // GPIO порт EN пина на драйвере
-
+GPIO_TypeDef* en_port; // GPIO порт EN пина на драйвере
 uint16_t en_pin; // GPIO пин EN пина на драйвере
-
-GPIO_TypeDef\* dir_port; // GPIO порт DIR пина на драйвере
-
+GPIO_TypeDef* dir_port; // GPIO порт DIR пина на драйвере
 uint16_t dir_pin; // GPIO порт DIR пина на драйвере
-
-ADC_HandleTypeDef\* adc; // АЦП который используетс для энкодера
-
-uint32_t adc_buffer\[adc_buffer_len\]; // Буфер значений АЦП. Нужно сделать "#define
-
-// adc_buffer_len (x)" перед подключением
-
-// библиотеки.
-
+ADC_HandleTypeDef* adc; // АЦП который используетс для энкодера
+uint32_t adc_buffer[adc_buffer_len]; // Буфер значений АЦП. Нужно сделать "#define adc_buffer_len (x)" перед подключением библиотеки.
+```
 \- прочие - используются для отладки и внутренних вычислений (не редактировать!!!)
-
+``` c
 int precalc_period;
-
 float current_velocity;
-
 long ticks_last;
-
 long ticks_total;
-
+```
 **Функции для работы со структурой.**
-
+``` c
 int stepper_init(struct stepper \*stp); // initialize peripherals
-
+```
 Назначение. Инициализация периферии микроконтроллера в соответствии с конфигурационными параметрами.
-
 Входные переменные. Указатель на нужную структуру struct stepper
-
 Возвращаемое значение: всегда 1
-
 Применение. После HAL_Init() и определения всех конфигурационных параметров в объекте stepper, до всех остальных функций, работающих с соответствующим объектом stepper.
-
+```c
 int stepper_set(struct stepper \*stp); // apply en, dir, step to motor
-
+```
 Назначение. применяет текущие значения current velocity и enable на привод
-
 Входные переменные. Указатель на нужную структуру struct stepper
-
 Возвращаемое значение: всегда 1
-
 Применение. Для отдачи команды на привод.
-
-int stepper_calculate_angle(struct stepper \*stp); // calculate current stepper angle
-
-// from encoder
-
+``` c
+int stepper_calculate_angle(struct stepper \*stp); // calculate current stepper angle from encoder
+```
 Назначение. Обновляет значение current_position по показаниям энкодера
-
 Входные переменные. Указатель на нужную структуру struct stepper
-
 Возвращаемое значение: всегда 1
-
 Применение. Для получения актуальных показаний датчика
-
-int stepper_logic(struct stepper \*stp); // interprets angles and sets target velocity to
-
-// arrive at target angle and stay there
-
+``` c
+int stepper_logic(struct stepper \*stp); // interprets angles and sets target velocity to arrive at target angle and stay there
+```
 Назначение. Логика управления двигателем. Исходя из текущего угла current_position и ограничения скорости target_velocity считает current_velocity
-
 Входные переменные. Указатель на нужную структуру struct stepper
-
 Возвращаемое значение: всегда 1
-
 Применение. После stepper_calculate_angle, до stepper_set
 
 **Пример применения структуры данных для работы с шаговым сервоприводом.**
-
+``` c
 //объявить глобально
-
 #define stp_len 2
-
 struct stepper stp\[stp_len\];
 
 //инициализация в main()
-
 for (c = 0; c < stp_len; ++c) {
-
-stp\[c\].enable = 1;
-
-stp\[c\].hold_position_tolerance = 1.0;
-
-stp\[c\].drive_position_tolerance = 0.5;
-
-stp\[c\].target_position = 0.0;
-
-stp\[c\].target_velocity = 0.0;
-
+stp[c].enable = 1;
+stp[c].hold_position_tolerance = 1.0;
+stp[c].drive_position_tolerance = 0.5;
+stp[c].target_position = 0.0;
+stp[c].target_velocity = 0.0;
 }
 
-stp\[0\].dir_port = Stepper1_DIR_GPIO_Port;
-
-stp\[0\].dir_pin = Stepper1_DIR_Pin;
-
-stp\[0\].en_port = Stepper1_EN_GPIO_Port;
-
-stp\[0\].en_pin = Stepper1_EN_Pin;
-
-stp\[0\].timer = &htim9;
-
-stp\[0\].raw_angle_offset = 300;
-
-stp\[0\].adc = &hadc2;
-
-stp\[0\].channel = TIM_CHANNEL_1;
-
-stp\[0\].gear_ratio = 100.0;
-
-stp\[0\].direction_fix = -1;
-
-stp\[1\].dir_port = Stepper2_DIR_GPIO_Port;
-
-stp\[1\].dir_pin = Stepper2_DIR_Pin;
-
-stp\[1\].en_port = Stepper2_EN_GPIO_Port;
-
-stp\[1\].en_pin = Stepper2_EN_Pin;
-
-stp\[1\].timer = &htim12;
-
-stp\[1\].raw_angle_offset = -350;
-
-stp\[1\].adc = &hadc1;
-
-stp\[1\].channel = TIM_CHANNEL_1;
-
-stp\[1\].gear_ratio = 100.0;
-
-stp\[1\].direction_fix = -1;
-
+stp[0].dir_port = Stepper1_DIR_GPIO_Port;
+stp[0].dir_pin = Stepper1_DIR_Pin;
+stp[0].en_port = Stepper1_EN_GPIO_Port;
+stp[0].en_pin = Stepper1_EN_Pin;
+stp[0].timer = &htim9;
+stp[0].raw_angle_offset = 300;
+stp[0].adc = &hadc2;
+stp[0].channel = TIM_CHANNEL_1;
+stp[0].gear_ratio = 100.0;
+stp[0].direction_fix = -1;
+stp[1].dir_port = Stepper2_DIR_GPIO_Port;
+stp[1].dir_pin = Stepper2_DIR_Pin;
+stp[1].en_port = Stepper2_EN_GPIO_Port;
+stp[1].en_pin = Stepper2_EN_Pin;
+stp[1].timer = &htim12;
+stp[1].raw_angle_offset = -350;
+stp[1].adc = &hadc1;
+stp[1].channel = TIM_CHANNEL_1;
+stp[1].gear_ratio = 100.0;
+stp[1].direction_fix = -1;
 for (c = 0; c < stp_len; ++c) {
-
-stepper_init(&stp\[c\]);
-
+stepper_init(&stp[c]);
 }
 
 //управление приводом в периодически-исполняемой функции (привязанной к таймеру, например):
-
 for (c = 0; c < stp_len; ++c) {
-
-stepper_calculate_angle(&stp\[c\]);
-
-stepper_logic(&stp\[c\]);
-
-stepper_set(&stp\[c\]);
-
+stepper_calculate_angle(&stp[c]);
+stepper_logic(&stp[c]);
+stepper_set(&stp[c]);
 }
-
+```
 ### **2.typedef struct dc_motor**
 
 Назначение. Управление сервоприводом, состоящим из двигателя постоянного тока (возможно, с редуктором), драйвера двигателя постоянного тока с интерфейсом двухканального ШИМ или с интерфейсом одноканального ШИМ и пинами A1A2 задающими направление вращения, и двухканальным инкрементальным энкодером на валу электромотора.
