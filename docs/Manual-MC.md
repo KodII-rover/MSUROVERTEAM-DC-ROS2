@@ -998,19 +998,19 @@ chmod 777 /dev/USBtty*
 1.  Пропишите эти названия в файле MSUROVERTEAM-DC-ROS2/eureka_movement_2/eureka_movement_2/usb_movement_3.py
 ``` python
 if(self.left_connected < 1 or not self.left.isOpen()):
-try:
-self.left = serial.Serial('/dev/USBtty*', 9600, timeout=1) #первый интерфейс
-self.left_connected = 1
-except:
-self.get_logger().warning("No USB FS Connection to Left Side!")
-self.left_connected = 0
+   try:
+      self.left = serial.Serial('/dev/USBtty*', 9600, timeout=1) #первый интерфейс
+      self.left_connected = 1
+   except:
+      self.get_logger().warning("No USB FS Connection to Left Side!")
+      self.left_connected = 0
 if(self.right_connected < 1 or not self.right.isOpen()):
-try:
-self.right = serial.Serial('/dev/USBtty*', 9600, timeout=1) #второй интерфейс
-self.right_connected = 1
-except:
-self.get_logger().warning("No USB FS Connection to Right Side!")
-self.right_connected = 0
+   try:
+      self.right = serial.Serial('/dev/USBtty*', 9600, timeout=1) #второй интерфейс
+      self.right_connected = 1
+   except:
+      self.get_logger().warning("No USB FS Connection to Right Side!")
+      self.right_connected = 0
 ```
 Замечание: в нашем примере у интерфейсов "красивые" названия '/dev/dc_left', '/dev/dc_right'. Этого (а еще того, что интерфейс не будет сбрасываться при перезагрузке вычислителя) можно добиться с помощью udev правил. Это не сложная, но довольно кропотливая процедура на которую в сети Интернет написано множество туториалов, например тут: https://askubuntu.com/questions/1021547/writing-udev-rule-for-usb-device
 
