@@ -226,49 +226,52 @@ int stepper_logic(struct stepper *stp); // interprets angles and sets target vel
 
 **Пример применения структуры данных для работы с шаговым сервоприводом.**
 ``` c
-//объявить глобально
+// Объявить глобально
 #define stp_len 2
 struct stepper stp[stp_len];
 
-//инициализация в main()
+// Инициализация в main()
 for (c = 0; c < stp_len; ++c) {
-stp[c].enable = 1;
-stp[c].hold_position_tolerance = 1.0;
-stp[c].drive_position_tolerance = 0.5;
-stp[c].target_position = 0.0;
-stp[c].target_velocity = 0.0;
+    stp[c].enable = 1;
+    stp[c].hold_position_tolerance = 1.0;
+    stp[c].drive_position_tolerance = 0.5;
+    stp[c].target_position = 0.0;
+    stp[c].target_velocity = 0.0;
 }
 
 stp[0].dir_port = Stepper1_DIR_GPIO_Port;
-stp[0].dir_pin = Stepper1_DIR_Pin;
-stp[0].en_port = Stepper1_EN_GPIO_Port;
-stp[0].en_pin = Stepper1_EN_Pin;
-stp[0].timer = &htim9;
+stp[0].dir_pin  = Stepper1_DIR_Pin;
+stp[0].en_port  = Stepper1_EN_GPIO_Port;
+stp[0].en_pin   = Stepper1_EN_Pin;
+stp[0].timer    = &htim9;
 stp[0].raw_angle_offset = 300;
-stp[0].adc = &hadc2;
-stp[0].channel = TIM_CHANNEL_1;
-stp[0].gear_ratio = 100.0;
+stp[0].adc      = &hadc2;
+stp[0].channel  = TIM_CHANNEL_1;
+stp[0].gear_ratio    = 100.0;
 stp[0].direction_fix = -1;
+
 stp[1].dir_port = Stepper2_DIR_GPIO_Port;
-stp[1].dir_pin = Stepper2_DIR_Pin;
-stp[1].en_port = Stepper2_EN_GPIO_Port;
-stp[1].en_pin = Stepper2_EN_Pin;
-stp[1].timer = &htim12;
+stp[1].dir_pin  = Stepper2_DIR_Pin;
+stp[1].en_port  = Stepper2_EN_GPIO_Port;
+stp[1].en_pin   = Stepper2_EN_Pin;
+stp[1].timer    = &htim12;
 stp[1].raw_angle_offset = -350;
-stp[1].adc = &hadc1;
-stp[1].channel = TIM_CHANNEL_1;
-stp[1].gear_ratio = 100.0;
+stp[1].adc      = &hadc1;
+stp[1].channel  = TIM_CHANNEL_1;
+stp[1].gear_ratio    = 100.0;
 stp[1].direction_fix = -1;
+
 for (c = 0; c < stp_len; ++c) {
-stepper_init(&stp[c]);
+    stepper_init(&stp[c]);
 }
 
-//управление приводом в периодически-исполняемой функции (привязанной к таймеру, например):
+// Управление приводом в периодически-исполняемой функции:
 for (c = 0; c < stp_len; ++c) {
-stepper_calculate_angle(&stp[c]);
-stepper_logic(&stp[c]);
-stepper_set(&stp[c]);
+    stepper_calculate_angle(&stp[c]);
+    stepper_logic(&stp[c]);
+    stepper_set(&stp[c]);
 }
+
 ```
 ### **2.typedef struct dc_motor**
 
@@ -364,60 +367,62 @@ int dc_pid(struct dc_motor *motor); // calculate motor inputs via PID
 
 **Функции для работы со структурой.**
 ``` c
-//объявить глобально
+// Объявить глобально
 #define dc_len 2
 struct dc_motor dc[dc_len];
 
-//инициализация в main()
+// Инициализация в main()
 for (c = 0; c < dc_len; ++c) {
-dc[c].target_velocity = 0.0;
-dc[c].raw_velocity = 0.0;
-dc[c].filtered_velocity = 0.0;
-dc[c].filtered_velocity_prev = 0.0;
-dc[c].clock_prev = 0;
-dc[c].acceleration = 0.0;
-dc[c].acceleration_filtered = 0.0;
-dc[c].gear_ratio = 100;
-dc[c].encoder_resolution = 34;
-dc[c].low_pass_gain = 0.9;
-dc[c].gain_p = gain_p;
-dc[c].gain_i = gain_i;
-dc[c].gain_d = gain_d;
-dc[c].integral_fade_gain = 0.99;
-dc[c].integral_error = 0.0;
-dc[c].pulse = 0.0;
-dc[c].clock_timer = &htim10;
-dc[c].voltage_limit = 0.95;
+    dc[c].target_velocity = 0.0;
+    dc[c].raw_velocity = 0.0;
+    dc[c].filtered_velocity = 0.0;
+    dc[c].filtered_velocity_prev = 0.0;
+    dc[c].clock_prev = 0;
+    dc[c].acceleration = 0.0;
+    dc[c].acceleration_filtered = 0.0;
+    dc[c].gear_ratio = 100;
+    dc[c].encoder_resolution = 34;
+    dc[c].low_pass_gain = 0.9;
+    dc[c].gain_p = gain_p;
+    dc[c].gain_i = gain_i;
+    dc[c].gain_d = gain_d;
+    dc[c].integral_fade_gain = 0.99;
+    dc[c].integral_error = 0.0;
+    dc[c].pulse = 0.0;
+    dc[c].clock_timer = &htim10;
+    dc[c].voltage_limit = 0.95;
 }
-dc[0].pwm_timer = &htim4;
-dc[0].pwm_channel = TIM_CHANNEL_2;
-dc[0].encoder_timer = &htim2;
+
+dc[0].pwm_timer      = &htim4;
+dc[0].pwm_channel    = TIM_CHANNEL_2;
+dc[0].encoder_timer  = &htim2;
 dc[0].velocity_correction_gain = -0.5;
-dc[0].A1_port = A1_GPIO_Port;
-dc[0].A1_pin = A1_Pin;
-dc[0].A2_port = A2_GPIO_Port;
-dc[0].A2_pin = A2_Pin;
-dc[1].pwm_timer = &htim4;
-dc[1].pwm_channel = TIM_CHANNEL_1;
-dc[1].encoder_timer = &htim1;
+dc[0].A1_port        = A1_GPIO_Port;
+dc[0].A1_pin         = A1_Pin;
+dc[0].A2_port        = A2_GPIO_Port;
+dc[0].A2_pin         = A2_Pin;
+
+dc[1].pwm_timer      = &htim4;
+dc[1].pwm_channel    = TIM_CHANNEL_1;
+dc[1].encoder_timer  = &htim1;
 dc[1].velocity_correction_gain = -0.5;
-dc[1].A1_port = B1_GPIO_Port;
-dc[1].A1_pin = B1_Pin;
-dc[1.A2_port = B2_GPIO_Port;
-dc[1].A2_pin = B2_Pin;
+dc[1].A1_port        = B1_GPIO_Port;
+dc[1].A1_pin         = B1_Pin;
+dc[1].A2_port        = B2_GPIO_Port;
+dc[1].A2_pin         = B2_Pin;
 
 for (c = 0; c < dc_len; ++c) {
-dc_init(&dc[c]);
-dc_calculate_period(&dc[c]);
+    dc_init(&dc[c]);
+    dc_calculate_period(&dc[c]);
 }
 
-//управление приводом в периодически-исполняемой функции (привязанной к таймеру, например):
+// Управление приводом в периодически-исполняемой функции:
 for (c = 0; c < dc_len; ++c) {
-dc_calculate_period(&dc[c]);
-dc_calculate_velocity(&dc[c]);
-dc_pid(&dc[c]);
-dc[c].pulse = clamp_float(dc[c].pid_value, -voltage_limit, voltage_limit);
-dc_set_pulse_A1A2(&dc[c]);
+    dc_calculate_period(&dc[c]);
+    dc_calculate_velocity(&dc[c]);
+    dc_pid(&dc[c]);
+    dc[c].pulse = clamp_float(dc[c].pid_value, -voltage_limit, voltage_limit);
+    dc_set_pulse_A1A2(&dc[c]);
 }
 ```
 ## **ROS2 Python3 Модуль eureka_movement_lib.py**
@@ -619,21 +624,22 @@ if __name__ == "__main__":
 ```
 **C код на STM32F407DISCOVERY**
 ``` c
-//usb variables
+// usb variables
 char usbd_ch[2048];
 char reply_buffer[2048];
 int usb_flag;
 int sscanf_flag = 0;
 int usb_ctr = 0;
+
 char command_message_format[] =
-"global: hrtb=%d, cm=%d, ps=%d, vl=%f, gp=%f, gi=%f, gd=%f\r\n\
+    "global: hrtb=%d, cm=%d, ps=%d, vl=%f, gp=%f, gi=%f, gd=%f\r\n\
 wheel1: stp_pos=%f, stp_vel=%f, dc_vel=%f\r\n\
 wheel2: stp_pos=%f, stp_vel=%f, dc_vel=%f\r\n\
 gp: pulse=%f\r\n\
 __end__";
 
 char reply_message_format[] =
-"wheel1: stepper_pos=%2f, dc_vel=%2f\r\n\
+    "wheel1: stepper_pos=%2f, dc_vel=%2f\r\n\
 wheel2: stepper_pos=%2f, dc_vel=%2f\r\n\
 __end__";
 
@@ -649,69 +655,80 @@ struct dc_motor dc[dc_len];
 struct dc_motor gp_driver;
 struct stepper stp[stp_len];
 
-int main(void)
+int main(void) 
 {
-/* USER CODE BEGIN 1 */
-/* USER CODE END 1 */
-/* MCU Configuration--------------------------------------------------------*/
-/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-HAL_Init();
+    /* USER CODE BEGIN 1 */
+    /* USER CODE END 1 */
 
-/* USER CODE BEGIN Init */
-/* USER CODE END Init */
-/* Configure the system clock */
-SystemClock_Config();
+    /* MCU Configuration--------------------------------------------------------*/
+    HAL_Init();
 
-/* USER CODE BEGIN SysInit */
-/* USER CODE END SysInit */
-/* Initialize all configured peripherals */
-MX_GPIO_Init();
-MX_DMA_Init();
-MX_TIM4_Init();
-MX_TIM5_Init();
-MX_TIM7_Init();
-MX_ADC1_Init();
-MX_TIM9_Init();
-MX_TIM10_Init();
-MX_USB_DEVICE_Init();
-MX_TIM8_Init();
-MX_CAN1_Init();
-MX_TIM1_Init();
-MX_TIM2_Init();
-MX_TIM3_Init();
-MX_TIM12_Init();
-MX_ADC2_Init();
-MX_ADC3_Init();
+    /* USER CODE BEGIN Init */
+    /* USER CODE END Init */
 
-/* USER CODE BEGIN 2 */
-/* USER CODE END 2 */
-/* Infinite loop */
-/* USER CODE BEGIN WHILE */
-while (1) {
-if (usb_flag > 0) {
-heartbeat_counter = 0;
-usb_ctr = strlen(usbd_ch);
-sscanf_flag = sscanf(usbd_ch, command_message_format, &heartbeat,
-&control_mode, &power_saving, &voltage_limit, &gain_p, &gain_i, &gain_d,
-&(stp[0].target_position), &(stp[0].target_velocity), &(dc[0].target_velocity),
-&(stp[1].target_position), &(stp[1].target_velocity), &(dc[1].target_velocity),
-&(gp_driver.pulse));
-// vel_2_targ = vel_3_targ;
-sprintf(reply_buffer, reply_message_format, stp[0].current_position, dc[0].raw_velocity,
-stp[1].current_position, dc[1].raw_velocity);
-CDC_Transmit_FS((uint8_t*) reply_buffer, strlen(reply_buffer));
-usb_flag = 0;
-for (c = 0; c < dc_len; ++c) {
-dc[c].gain_p = gain_p;
-dc[c].gain_i = gain_i;
-dc[c].gain_d = gain_d;
-}
-}
+    /* Configure the system clock */
+    SystemClock_Config();
 
-/* USER CODE END WHILE */
-/* USER CODE BEGIN 3 */
-}
-/* USER CODE END 3 */
+    /* USER CODE BEGIN SysInit */
+    /* USER CODE END SysInit */
+
+    /* Initialize all configured peripherals */
+    MX_GPIO_Init();
+    MX_DMA_Init();
+    MX_TIM4_Init();
+    MX_TIM5_Init();
+    MX_TIM7_Init();
+    MX_ADC1_Init();
+    MX_TIM9_Init();
+    MX_TIM10_Init();
+    MX_USB_DEVICE_Init();
+    MX_TIM8_Init();
+    MX_CAN1_Init();
+    MX_TIM1_Init();
+    MX_TIM2_Init();
+    MX_TIM3_Init();
+    MX_TIM12_Init();
+    MX_ADC2_Init();
+    MX_ADC3_Init();
+
+    /* USER CODE BEGIN 2 */
+    /* USER CODE END 2 */
+
+    /* Infinite loop */
+    /* USER CODE BEGIN WHILE */
+    while (1) {
+        if (usb_flag > 0) {
+            heartbeat_counter = 0;
+            usb_ctr = strlen(usbd_ch);
+
+            sscanf_flag = sscanf(usbd_ch, command_message_format, 
+                &heartbeat, &control_mode, &power_saving, &voltage_limit, 
+                &gain_p, &gain_i, &gain_d,
+                &(stp[0].target_position), &(stp[0].target_velocity), &(dc[0].target_velocity),
+                &(stp[1].target_position), &(stp[1].target_velocity), &(dc[1].target_velocity),
+                &(gp_driver.pulse)
+            );
+
+            sprintf(reply_buffer, reply_message_format, 
+                stp[0].current_position, dc[0].raw_velocity,
+                stp[1].current_position, dc[1].raw_velocity
+            );
+
+            CDC_Transmit_FS((uint8_t*)reply_buffer, strlen(reply_buffer));
+            
+            usb_flag = 0;
+
+            for (c = 0; c < dc_len; ++c) {
+                dc[c].gain_p = gain_p;
+                dc[c].gain_i = gain_i;
+                dc[c].gain_d = gain_d;
+            }
+        }
+        /* USER CODE END WHILE */
+
+        /* USER CODE BEGIN 3 */
+    }
+    /* USER CODE END 3 */
 }
 ```
 **Следует понимать, что любой аппаратно-программный интерфейс требует корректной настройки и подключения. Это область радиоэлектроники. Выше приведен пример применения одного из десятков возможных интерфейсов. Это НЕ ЧАСТЬ программной библиотеки управления движения ровером на низком уровне. Выбирать конкретный аппаратный интерфейс для программной библиотеки бессмысленно, это сделает ее очень узкоспециализированный и практически неприменимой, поэтому эта часть остается на усмотрение пользователя.**
@@ -842,86 +859,91 @@ uint32_t adc2_buf[adc_buffer_len]; //AS5600 adc buffer
 ``` c
 /* USER CODE BEGIN 2 */
 int c;
-//lets initialize default values for all motors
+
+// lets initialize default values for all motors
 for (c = 0; c < dc_len; ++c) {
-dc[c].target_velocity = 0.0;
-dc[c].raw_velocity = 0.0;
-dc[c].filtered_velocity = 0.0;
-dc[c].filtered_velocity_prev = 0.0;
-dc[c].clock_prev = 0;
-dc[c].acceleration = 0.0;
-dc[c].acceleration_filtered = 0.0;
-dc[c].gear_ratio = 100;
-dc[c].encoder_resolution = 34;
-dc[c].low_pass_gain = 0.9;
-dc[c].gain_p = gain_p;
-dc[c].gain_i = gain_i;
-dc[c].gain_d = gain_d;
-dc[c].integral_fade_gain = 0.99;
-dc[c].integral_error = 0.0;
-dc[c].pulse = 0.0;
-dc[c].clock_timer = &htim10;
-dc[c].voltage_limit = 0.95;
+    dc[c].target_velocity = 0.0;
+    dc[c].raw_velocity = 0.0;
+    dc[c].filtered_velocity = 0.0;
+    dc[c].filtered_velocity_prev = 0.0;
+    dc[c].clock_prev = 0;
+    dc[c].acceleration = 0.0;
+    dc[c].acceleration_filtered = 0.0;
+    dc[c].gear_ratio = 100;
+    dc[c].encoder_resolution = 34;
+    dc[c].low_pass_gain = 0.9;
+    dc[c].gain_p = gain_p;
+    dc[c].gain_i = gain_i;
+    dc[c].gain_d = gain_d;
+    dc[c].integral_fade_gain = 0.99;
+    dc[c].integral_error = 0.0;
+    dc[c].pulse = 0.0;
+    dc[c].clock_timer = &htim10;
+    dc[c].voltage_limit = 0.95;
 }
-dc[0].pwm_timer = &htim4;
-dc[0].pwm_channel = TIM_CHANNEL_2;
-dc[0].encoder_timer = &htim2;
+
+dc[0].pwm_timer      = &htim4;
+dc[0].pwm_channel    = TIM_CHANNEL_2;
+dc[0].encoder_timer  = &htim2;
 dc[0].velocity_correction_gain = -0.5;
-dc[0].A1_port = A1_GPIO_Port;
-dc[0].A1_pin = A1_Pin;
-dc[0].A2_port = A2_GPIO_Port;
-dc[0].A2_pin = A2_Pin;
-dc[1].pwm_timer = &htim4;
-dc[1].pwm_channel = TIM_CHANNEL_1;
-dc[1].encoder_timer = &htim1;
+dc[0].A1_port        = A1_GPIO_Port;
+dc[0].A1_pin         = A1_Pin;
+dc[0].A2_port        = A2_GPIO_Port;
+dc[0].A2_pin         = A2_Pin;
+
+dc[1].pwm_timer      = &htim4;
+dc[1].pwm_channel    = TIM_CHANNEL_1;
+dc[1].encoder_timer  = &htim1;
 dc[1].velocity_correction_gain = -0.5;
-dc[1].A1_port = B1_GPIO_Port;
-dc[1].A1_pin = B1_Pin;
-dc[1].A2_port = B2_GPIO_Port;
-dc[1].A2_pin = B2_Pin;
+dc[1].A1_port        = B1_GPIO_Port;
+dc[1].A1_pin         = B1_Pin;
+dc[1].A2_port        = B2_GPIO_Port;
+dc[1].A2_pin         = B2_Pin;
 
 for (c = 0; c < stp_len; ++c) {
-stp[c].enable = 1;
-stp[c].hold_position_tolerance = 1.0;
-stp[c].drive_position_tolerance = 0.5;
-stp[c].target_position = 0.0;
-stp[c].target_velocity = 0.0;
+    stp[c].enable = 1;
+    stp[c].hold_position_tolerance = 1.0;
+    stp[c].drive_position_tolerance = 0.5;
+    stp[c].target_position = 0.0;
+    stp[c].target_velocity = 0.0;
 }
 
-//для существующего привода можно указать другие параметры если это необходимо (скажем поменять используемый канал таймера, это зависит от аппаратной конфигурации)
-stp[0].dir_port = Stepper1_DIR_GPIO_Port;
-stp[0].dir_pin = Stepper1_DIR_Pin;
-stp[0].en_port = Stepper1_EN_GPIO_Port;
-stp[0].en_pin = Stepper1_EN_Pin;
-stp[0].timer = &htim9;
-stp[0].raw_angle_offset = /*-30;//*/300;
-stp[0].adc = &hadc2;
-stp[0].channel = TIM_CHANNEL_2;
+// для существующего привода можно указать другие параметры (зависит от аппаратной конфигурации)
+stp[0].dir_port   = Stepper1_DIR_GPIO_Port;
+stp[0].dir_pin    = Stepper1_DIR_Pin;
+stp[0].en_port    = Stepper1_EN_GPIO_Port;
+stp[0].en_pin     = Stepper1_EN_Pin;
+stp[0].timer      = &htim9;
+stp[0].raw_angle_offset = 300; // /*-30;*/
+stp[0].adc        = &hadc2;
+stp[0].channel    = TIM_CHANNEL_2;
 stp[0].gear_ratio = 100.0;
-stp[0].direction_fix = /*1;//*/-1;
+stp[0].direction_fix = -1;     // /*1;*/
 
-//нам не нужна инициализация еще одного привода
-/* stp[1].dir_port = Stepper2_DIR_GPIO_Port;
+// нам не нужна инициализация еще одного привода
+/* 
+stp[1].dir_port = Stepper2_DIR_GPIO_Port;
 stp[1].dir_pin = Stepper2_DIR_Pin;
 stp[1].en_port = Stepper2_EN_GPIO_Port;
 stp[1].en_pin = Stepper2_EN_Pin;
 stp[1].timer = &htim12;
-stp[1].raw_angle_offset = /*-1080;//*/ -350;
+stp[1].raw_angle_offset = -350;
 stp[1].adc = &hadc1;
 stp[1].channel = TIM_CHANNEL_1;
 stp[1].gear_ratio = 100.0;
-stp[1].direction_fix = /*1;//*/-1;
+stp[1].direction_fix = -1;
 */
 
 HAL_TIM_Base_Start(&htim10);
 HAL_TIM_Base_Start_IT(&htim7);
+
 for (c = 0; c < dc_len; ++c) {
-dc_init(&dc[c]);
-dc_calculate_period(&dc[c]);
+    dc_init(&dc[c]);
+    dc_calculate_period(&dc[c]);
 }
 
 for (c = 0; c < stp_len; ++c) {
-stepper_init(&stp[c]);
+    stepper_init(&stp[c]);
 }
 
 HAL_Delay(100);
@@ -931,71 +953,78 @@ HAL_Delay(100);
 
 Редактируем файл Src/stm32f4xx_it.c.
 ``` c
-int tim7_handler(void){
-int c;
-heartbeat_counter += 1;
-for (c = 0; c < dc_len; ++c) {
-dc_calculate_period(&dc[c]);
-dc_calculate_velocity(&dc[c]);
-if(control_mode == CONTROL_MODE_RAW){
-dc[c].pid_value = dc[c].target_velocity / 360.0;
-dc[c].integral_error = 0.0;
-}
-else{
-dc_pid(&dc[c]);
-}
+int tim7_handler(void) {
+    int c;
+    heartbeat_counter += 1;
 
-if(heartbeat_counter > 10 && heartbeat == HEARTBEAT_ON){
-dc[c].pulse = 0.0;
-gp_driver.pulse = 0.0;
-}
-else{
-dc[c].pulse = clamp_float(dc[c].pid_value, -voltage_limit, voltage_limit);
-}
-dc_set_pulse_A1A2(&dc[c]);
-}
+    for (c = 0; c < dc_len; ++c) {
+        dc_calculate_period(&dc[c]);
+        dc_calculate_velocity(&dc[c]);
 
-//now steppers
+        if (control_mode == CONTROL_MODE_RAW) {
+            dc[c].pid_value = dc[c].target_velocity / 360.0;
+            dc[c].integral_error = 0.0;
+        } else {
+            dc_pid(&dc[c]);
+        }
 
-for (c = 0; c < stp_len; ++c) {
-stepper_calculate_angle(&stp[c]);
-stepper_logic(&stp[c]);
-stepper_set(&stp[c]);
+        if (heartbeat_counter > 10 && heartbeat == HEARTBEAT_ON) {
+            dc[c].pulse = 0.0;
+            gp_driver.pulse = 0.0;
+        } else {
+            dc[c].pulse = clamp_float(dc[c].pid_value, -voltage_limit, voltage_limit);
+        }
+
+        dc_set_pulse_A1A2(&dc[c]);
+    }
+
+    // now steppers
+    for (c = 0; c < stp_len; ++c) {
+        stepper_calculate_angle(&stp[c]);
+        stepper_logic(&stp[c]);
+        stepper_set(&stp[c]);
+    }
+
+    return 1;
 }
-
-return 1;}
 ```
 ### **Связь с высокоуровневым вычислителем.**
 
 Редактируем главный цикл в файле Src/main.c. Отредактировать команды работы со строками чтобы они отражали новую структуру сообщения.
 ``` c
 /* USER CODE BEGIN WHILE */
-
 while (1) {
-if (usb_flag > 0) {
-heartbeat_counter = 0;
-usb_ctr = strlen(usbd_ch);
+    if (usb_flag > 0) {
+        heartbeat_counter = 0;
+        usb_ctr = strlen(usbd_ch);
 
-// отредактировать команды работы со строками чтобы они отражали новую структуру сообщения.
-sscanf_flag = sscanf(usbd_ch, command_message_format, &heartbeat,
-&control_mode, &power_saving, &voltage_limit, &gain_p, &gain_i, &gain_d,
-&(stp[0].target_position), &(stp[0].target_velocity), &(dc[0].target_velocity),
-&(dc[1].target_velocity),
-&(gp_driver.pulse));
+        // отредактировать команды работы со строками чтобы они отражали новую структуру сообщения.
+        sscanf_flag = sscanf(usbd_ch, command_message_format, 
+            &heartbeat, &control_mode, &power_saving, &voltage_limit, 
+            &gain_p, &gain_i, &gain_d,
+            &(stp[0].target_position), &(stp[0].target_velocity), 
+            &(dc[0].target_velocity), &(dc[1].target_velocity),
+            &(gp_driver.pulse)
+        );
 
-// vel_2_targ = vel_3_targ;
+        // vel_2_targ = vel_3_targ;
 
-sprintf(reply_buffer, reply_message_format, stp[0].current_position, dc[0].raw_velocity,
-dc[1].raw_velocity);
-CDC_Transmit_FS((uint8_t*) reply_buffer, strlen(reply_buffer));
-usb_flag = 0;
-for (c = 0; c < dc_len; ++c) {
-dc[c].gain_p = gain_p;
-dc[c].gain_i = gain_i;
-dc[c].gain_d = gain_d;
-}
-}
+        sprintf(reply_buffer, reply_message_format, 
+            stp[0].current_position, 
+            dc[0].raw_velocity,
+            dc[1].raw_velocity
+        );
 
+        CDC_Transmit_FS((uint8_t*)reply_buffer, strlen(reply_buffer));
+        
+        usb_flag = 0;
+
+        for (c = 0; c < dc_len; ++c) {
+            dc[c].gain_p = gain_p;
+            dc[c].gain_i = gain_i;
+            dc[c].gain_d = gain_d;
+        }
+    }
 /* USER CODE END WHILE */
 ```
 **Альтернативный пример готов к запуску.**
@@ -1085,48 +1114,67 @@ import rclpy
 from rclpy.node import Node
 from std_msgs.msg import UInt8MultiArray
 import atexit
+
 def exit_handler():
-os.system('ip link set can0 down')
+    os.system('ip link set can0 down')
+
 class can_transceiver(Node):
-def __init__(self):
-os.system('ip link set can0 up type can bitrate 1000000 restart-ms 1000')
-os.system('ip link set can0 txqueuelen 10000')
-self.can0 = can.interface.Bus(channel = 'can0', bustype = 'socketcan') # socketcan_native
-super().__init__('can_transceiver')
-self.pub = self.create_publisher(UInt8MultiArray, '/can_rx', 10)
-self.sub = self.create_subscription(UInt8MultiArray, '/can_tx', self.callback, 10)
-timer_period = 0.002 # seconds
-self.timer = self.create_timer(timer_period, self.spin)
-self.get_logger().info("CAN Started!")
-def __del__(self):
-self.get_logger().info("CAN Killed!")
-def callback(self, msg):
-# if(msg.data[0] == 12):
+    def __init__(self):
+        super().__init__('can_transceiver')
+        os.system('ip link set can0 up type can bitrate 1000000 restart-ms 1000')
+        os.system('ip link set can0 txqueuelen 10000')
+        
+        # socketcan_native
+        self.can0 = can.interface.Bus(channel='can0', bustype='socketcan') 
+        
+        self.pub = self.create_publisher(UInt8MultiArray, '/can_rx', 10)
+        self.sub = self.create_subscription(UInt8MultiArray, '/can_tx', self.callback, 10)
+        
+        timer_period = 0.002  # seconds
+        self.timer = self.create_timer(timer_period, self.spin)
+        self.get_logger().info("CAN Started!")
 
-# try:
+    def __del__(self):
+        self.get_logger().info("CAN Killed!")
 
-send = can.Message(arbitration_id = msg.data[0],data = msg.data[1:9] , is_extended_id=False)
-self.can0.send(send)
-print(msg.data)
-# except Exception as e :
-# self.get_logger().error(str(e))
+    def callback(self, msg):
+        # if(msg.data[0] == 12):
+        # try:
+        send = can.Message(
+            arbitration_id=msg.data[0], 
+            data=msg.data[1:9], 
+            is_extended_id=False
+        )
+        self.can0.send(send)
+        print(msg.data)
+        # except Exception as e:
+        #     self.get_logger().error(str(e))
 
-def spin(self):
-arr = UInt8MultiArray()
-msg = self.can0.recv(10.0)
-if((msg is not None) and(0 <= int(msg.arbitration_id) < 256 ) and all(0 <= int(item) < 256 for item in msg.data)):
-arr.data = bytearray([msg.arbitration_id]) + bytearray(msg.data)
-self.pub.publish(arr)
+    def spin(self):
+        arr = UInt8MultiArray()
+        msg = self.can0.recv(10.0)
+        
+        if (msg is not None and 
+            0 <= int(msg.arbitration_id) < 256 and 
+            all(0 <= int(item) < 256 for item in msg.data)):
+            
+            arr.data = bytearray([msg.arbitration_id]) + bytearray(msg.data)
+            self.pub.publish(arr)
+
 def main(args=None):
-atexit.register(exit_handler)
-rclpy.init()
-ct = can_transceiver()
-rclpy.spin(ct)
-ct.destroy_node()
-rclpy.shutdown()
-if __name__ == '__main__':
+    atexit.register(exit_handler)
+    rclpy.init(args=args)
+    ct = can_transceiver()
+    try:
+        rclpy.spin(ct)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        ct.destroy_node()
+        rclpy.shutdown()
 
-main()
+if __name__ == '__main__':
+    main()
 ```
 Этот скрип просто принимает массивы char из ROS2 топика /can_tx и отправляет их в шину CAN, а все что приходит в шине CAN он переводит в массив char и отправляет в ROS2 топик /can_rx
 
